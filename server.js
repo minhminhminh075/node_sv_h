@@ -8,16 +8,19 @@ app.use(express.json());
 
 // Kết nối MySQL 8.0
 const pool = mysql.createPool({
-    host: 'b8klhhzasfnjq01islfr-mysql.services.clever-cloud.com',
-    user: 'uowvngssv2uvho1e',
-    password: 'XiRTl6AgynY5bDkyCf8o',
-    database: 'b8klhhzasfnjq01islfr',
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     port: 3306,
     waitForConnections: true,
-    connectionLimit: 3,
-    queueLimit: 0
+    
+    // CÁC THÔNG SỐ VÀNG CHO SERVERLESS VERCEL
+    connectionLimit: 1,      // Hạ xuống 1 để dù Vercel có phân ra 5 Ninja thì vẫn vừa tròn quota 5
+    queueLimit: 0,
+    enableKeepAlive: true,   // Giúp Vercel tái sử dụng lại kết nối cũ thay vì mở mới liên tục
+    keepAliveInitialDelay: 10000 
 });
-
 // Tự động tạo bảng lưu trạng thái Acknowledge
 pool.query(`
     CREATE TABLE IF NOT EXISTS alert_acks (
