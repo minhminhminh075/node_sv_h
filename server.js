@@ -8,10 +8,10 @@ app.use(express.json());
 
 // Kết nối MySQL 8.0
 const pool = mysql.createPool({
-    host: 'b8klhhzasfnjq01islfr-mysql.services.clever-cloud.com', // Đã trả lại số 1
-    user: 'uowvngssv2uvho1e', // Đã trả lại số 1
+    host: 'b8klhhzasfnjq01islfr-mysql.services.clever-cloud.com',
+    user: 'uowvngssv2uvho1e',
     password: 'XiRTl6AgynY5bDkyCf8o',
-    database: 'b8klhhzasfnjq01islfr', // Đã trả lại số 1
+    database: 'b8klhhzasfnjq01islfr',
     port: 3306,
     waitForConnections: true,
     connectionLimit: 3,
