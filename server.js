@@ -17,7 +17,6 @@ const pool = mysql.createPool({
     connectionLimit: 3,
 });
 
-
 // Tự động tạo bảng lưu trạng thái Acknowledge
 pool.query(`
     CREATE TABLE IF NOT EXISTS alert_acks (
