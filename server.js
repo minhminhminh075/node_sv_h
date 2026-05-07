@@ -8,17 +8,21 @@ app.use(express.json());
 
 // Kết nối MySQL 8.0
 const pool = mysql.createPool({
-    host: 'b8klhhzasfnjq01islfr-mysql.services.clever-cloud.com',
-    user: 'uowvngssv2uvho1e',
-    password: 'XiRTl6AgynY5bDkyCf8o',
-    database: 'b8klhhzasfnjq01islfr',
-    port: 3306,
+    host: 'minhminhminh007-tanguyenhoangminh2002-356f.k.aivencloud.com',
+    user: 'avnadmin',
+    password: process.env.DB_PASSWORD,
+    database: 'defaultdb',
+    port: 21091,
+
+    ssl: {
+        rejectUnauthorized: false
+    },
+    
     waitForConnections: true,
-    connectionLimit: 3,
+    connectionLimit: 30, 
     queueLimit: 0
 });
 
-// Tự động tạo bảng lưu trạng thái Acknowledge
 pool.query(`
     CREATE TABLE IF NOT EXISTS alert_acks (
         room_number VARCHAR(10) NOT NULL,
@@ -412,19 +416,6 @@ app.put('/api/alerts/resolve/:room_number/:alert_type', async (req, res) => {
 // ==========================================
 // --- API THIẾT BỊ VÀ ĐIỀU KHIỂN IOT ---
 // ==========================================
-app.get('/api/iot', async (req, res) => {
-    try {
-        const sql = `
-            SELECT r.room_number, i.* FROM room_iot_state i
-            JOIN room r ON i.room_id = r.room_id
-        `;
-        const [data] = await pool.query(sql);
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
 app.get('/api/iot/:room_number', async (req, res) => {
     try {
         const sql = `
