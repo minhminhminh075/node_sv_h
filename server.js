@@ -14,13 +14,10 @@ const pool = mysql.createPool({
     database: 'b8klhhzasfnjq01islfr',
     port: 3306,
     waitForConnections: true,
-    
-    // CÁC THÔNG SỐ VÀNG CHO SERVERLESS VERCEL
-    connectionLimit: 1,      // Hạ xuống 1 để dù Vercel có phân ra 5 Ninja thì vẫn vừa tròn quota 5
-    queueLimit: 0,
-    enableKeepAlive: true,   // Giúp Vercel tái sử dụng lại kết nối cũ thay vì mở mới liên tục
-    keepAliveInitialDelay: 10000 
+    connectionLimit: 3,
+    queueLimit: 0
 });
+
 // Tự động tạo bảng lưu trạng thái Acknowledge
 pool.query(`
     CREATE TABLE IF NOT EXISTS alert_acks (
@@ -415,6 +412,19 @@ app.put('/api/alerts/resolve/:room_number/:alert_type', async (req, res) => {
 // ==========================================
 // --- API THIẾT BỊ VÀ ĐIỀU KHIỂN IOT ---
 // ==========================================
+app.get('/api/iot', async (req, res) => {
+    try {
+        const sql = `
+            SELECT r.room_number, i.* FROM room_iot_state i
+            JOIN room r ON i.room_id = r.room_id
+        `;
+        const [data] = await pool.query(sql);
+        res.json(data);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.get('/api/iot/:room_number', async (req, res) => {
     try {
         const sql = `
